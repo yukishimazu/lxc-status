@@ -8,6 +8,7 @@ lxc container status monitoring tool
 ## Package  requirements
 
     apt install ruby ruby-bundler
+    bundle install
 
 ## Usage
 
