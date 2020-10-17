@@ -1,6 +1,14 @@
 # lxc-status
 lxc container status monitoring tool
 
+## System requirements
+
+* Ubuntu 18.04 LTS
+
+## Package  requirements
+
+    apt install ruby ruby-bundler
+
 ## Usage
 
     ./lxc-status
