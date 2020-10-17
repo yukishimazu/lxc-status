@@ -1,0 +1,48 @@
+#!/usr/bin/ruby
+
+require 'active_support/all'
+
+# Usage
+# ./lxc-status
+# watch ./lxc-status
+
+begin
+  raise if IO.popen('which lxc').gets.nil?
+  json = IO.popen('lxc list --format=json').gets
+  raise if json.nil?
+rescue => e
+  puts e.message
+  exit 1
+end
+
+container_list = JSON.parse(json)
+
+puts '----------------------------------------------------------------'
+
+puts sprintf('%-15s','Name') + ' | ' +
+  sprintf('%-10s','Status') + ' | ' +
+  sprintf('%-15s','Memory') + ' | ' +
+  sprintf('%-15s','Memory(peak)')
+
+puts '----------------------------------------------------------------'
+
+usage_total = 0
+usage_peak_total = 0
+
+container_list.each{ |con|
+  puts sprintf('%15s',con['name']) + ' | ' +
+    sprintf('%10s',con['status']) + ' | ' +
+    sprintf('%15s',con['state']['memory']['usage'].to_s(:human_size)) + ' | ' +
+    sprintf('%15s',con['state']['memory']['usage_peak'].to_s(:human_size))
+  usage_total += con['state']['memory']['usage']
+  usage_peak_total += con['state']['memory']['usage_peak']
+}
+
+puts '----------------------------------------------------------------'
+
+puts sprintf('%-28s','Total') + ' | ' +
+  sprintf('%15s',usage_total.to_s(:human_size)) + ' | ' +
+  sprintf('%15s',usage_peak_total.to_s(:human_size))
+
+puts '----------------------------------------------------------------'
+
